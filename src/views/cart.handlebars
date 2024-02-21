@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras</title>
+</head>
+
+<body>
+    <h1>Carrito de Compras</h1>
+    <div class="container">
+
+        {{#if cartData}}
+        <div>
+            {{#each cartData}}
+            <div class="product">
+                <ul>
+                    <li>
+                        <p id="product-id">ID Del Producto : {{this.product._id}}</p>
+                        <p id="product-name">Nombre: {{this.product.title}}</p>
+                        <img style="width: 250px" src="{{this.product.thumbnail}}" alt="{{this.product.thumbnail}}">
+                        <p id="product-description">descripccion: {{this.product.description}}</p>
+                        <p id="product-category">categoria: {{this.product.category}}</p>
+                        <p id="product-price">Precio: {{this.product.price}}</p>
+                        <p id="product-quantity">Cantidad: {{this.quantity}}</p>
+                    </li>
+                </ul>
+                <button class="delete-button" data-product-id="{{this.product._id}}">❌</button>
+            </div>
+            {{/each}}
+        </div>
+        <button id="delete-all-button">Eliminar todos los productos</button>
+        {{else}}
+        <p>No hay productos en el carrito</p>
+        {{/if}}
+        <br>
+    </div>
+
+    <br>
+    <hr>
+
+<form action="/cart/{{userId}}/purchase" method="post">
+    <button  id="finalize-purchase-button">Finalizar Compra</button>
+</form>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+
+//generar ticket
+        document.getElementById('finalize-purchase-button').addEventListener('click', function () {
+            const userId = event.target.dataset.userId; 
+            window.location.href = `/cart/${userId}/purchase`;
+        });
+//fin generar ticket
+
+        //eliminar 1 producto
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', async (event) => {
+                try {
+                    const productId = event.target.dataset.productId;
+                    const userId = event.target.dataset.userId;
+
+                    console.log(productId);
+                    console.log(userId)
+                    const response = await fetch(`/cart/{{userId}}/products/${productId}`, {
+                        method: 'DELETE',
+                    });
+
+                    if (response.ok) {
+                        Swal.fire('Producto Eliminado', 'El producto fue eliminado correctamente del carrito', 'success');
+                        location.reload();
+                    } else {
+                        alert('Error al eliminar producto del carrito');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+        //fin eliminar 1 producto
+
+        //eliminar todos los productos
+        document.getElementById('delete-all-button').addEventListener('click', async () => {
+            try {
+                const response = await fetch("/cart/{{userId}}", {
+                    method: 'DELETE',
+                });
+
+                if (response.ok) {
+                    alert('Todos los productos han sido eliminados del carrito correctamente');
+                } else {
+                    alert('Error al eliminar todos los productos del carrito');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+        //fin eliminar todos los productos
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,69 @@
+<div class="flex">
+    <h1>Bienvenido {{ user.first_name }} {{ user.last_name }}!</h1>
+    <div style="display: flex; justify-content: space-around;
+    align-items: center;">
+        <form action="/profile" method="get">
+            <button style="cursor: pointer;">Ver mi Perfil</button>
+        </form>
+        <form id="realtime-products-form" action="/realtimeproducts" method="get">
+            <button style="cursor: pointer;">Ver productos en tiempo real</button>
+        </form>
+    </div>
+    <h1>Lista de productos:</h1>
+
+</div>
+
+
+{{#each exactLimitProducts}}
+<div class="product">
+    <ul>
+        <li>Codigo: {{this.code}}</li>
+        <h2>{{this.title}}</h2>
+        <li>{{this.thumbnail}}</li>
+        <li>Descripcion: {{this.description}}</li>
+        <li>Categoria: {{this.category}}</li>
+        <li>Stock: {{this.stock}}</li>
+        <li>Precio: $ {{this.price}}</li>
+    </ul>
+</div>
+{{/each}}
+
+</div>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- home.handlebars -->
+<script>
+    const realtimeProductsForm = document.getElementById('realtime-products-form');
+
+realtimeProductsForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    fetch('/api/sessions/current')
+        .then(response => response.json())
+        .then(data => {
+            if (data.user) {
+                window.location.href = '/realtimeproducts';
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Acceso denegado',
+                    text: 'Debe iniciar sesión o registrarse para ver esta página',
+                    showCancelButton: true,
+                    confirmButtonText: 'Registrarme',
+                    cancelButtonText: 'Iniciar Sesión',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/register'; 
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        window.location.href = '/login'; 
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error al verificar la autenticación del usuario:', error);
+        });
+});
+
+
+</script>

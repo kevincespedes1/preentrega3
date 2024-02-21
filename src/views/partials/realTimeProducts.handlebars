@@ -1,0 +1,109 @@
+<div class="flex">
+    <p>hola, {{user.last_name}}</p>
+    <p>su rol es : {{user.rol}}</p>
+    <p>solo los usuarios pueden hacer uso del carrito de compras.</p>
+    <h1>Lista de productos Tiempo Real:</h1>
+    <div style="display: flex; justify-content: space-around;
+    align-items: center;">
+        <form action="/" method="get">
+            <button style="cursor: pointer;">Regresar</button>
+        </form>
+        <form action="/cart" method="get">
+            <button style="cursor: pointer;">Ver Carrito</button>
+        </form>
+    </div>
+    <hr style="background-color: red;color:red; margin:2px">
+    <br>
+
+    {{!-- paginacion --}}
+    <div style="display:flex; justify-content: space-around;">
+        {{#if hasPrevPage}}
+        <a style="text-decoration: none;" href="/realTimeProducts?page={{prevPage}}"><button style="display: flex; justify-content: space-around;
+    align-items: center;">Anterior</button></a>
+        {{/if}}
+
+
+        {{#if hasNextPage}}
+        <a style="text-decoration: none;" href="/realTimeProducts?page={{nextPage}}"><button style="display: flex; justify-content: space-around;
+    align-items: center;">Siguiente</button></a>
+
+        {{/if}}
+    </div>
+    <p style="font-weight: bolder;    text-align: center;     letter-spacing: 2px;">Pagina: {{page}}</p>
+
+    <br>
+    <hr style="background-color: red;color:red; margin:2px">
+    <br>
+
+    <div class="container">
+        {{!-- <div id="products"></div> --}}
+        <div>
+            {{#each products}}
+            <div class="product">
+                <ul>
+                    <p>Id Del Producto: {{this._id}}</p>
+                    <p>Codigo: {{this.code}}</p>
+                    <h2>{{this.title}}</h2>
+                    <img style="width: 250px" src="{{this.thumbnail}}" alt="{{this.thumbnail}}">
+                    <p>Descripcion: {{this.description}}</p>
+                    <p>Categoria: {{this.category}}</p>
+                    <p>Stock: {{this.stock}}</p>
+                    <p>Precio: $ {{this.price}}</p>
+                </ul>
+
+
+                <button class="addToCartButton" data-product-id="{{this.id}}">Agregar al carrito</button>
+
+
+            </div>
+            {{/each}}
+        </div>
+        <div class="forms">
+            <h2>Agregar producto</h2>
+            <form action="/realtimeproducts" method="post" id="addProduct">
+                <label for="title">Nombre:</label>
+                <input type="text" id="title" required>
+
+                <label for="description">Descripción:</label>
+                <input type="text" id="description" required>
+
+                <label for="code">Código:</label>
+                <input type="text" id="code" required>
+
+                <label for="price">Precio:</label>
+                <input type="number" id="price" required>
+
+                <label for="stock">Stock:</label>
+                <input type="number" id="stock" required>
+                <label for="category">Categoria:</label>
+                <input type="text" id="category" required>
+                <label for="thumbnail">Imagen (URL):</label>
+                <input type="text" id="thumbnail">
+
+                <button type="submit" id="addProductButton">Agregar</button>
+            </form>
+            <h2>Eliminar producto</h2>
+            <form id="deleteProduct">
+                <label for="id">ID del producto:</label>
+                <input type="text" id="id">
+                <button type="button" id="deleteProductButton">Borrar</button>
+            </form>
+            <h2>Chat!!</h2>
+            <div id="chat">
+            </div>
+            <div>
+                <form id="chatForm" class="flex">
+                    <input type="hidden" id="user" value="{{user.email}}">
+                    <input type="hidden" id="rol" value="{{user.rol}}">
+                    <label for="message">Mensaje</label>
+                    <input type="text" id="message" name="message">
+                    <button type="submit" id="chat-button">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="/js/realTimeProducts.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>

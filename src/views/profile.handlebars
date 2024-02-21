@@ -1,0 +1,19 @@
+<h1>Perfil de Usuario</h1>
+<h2>Bienvenido, {{ user.first_name }} {{ user.last_name }}!</h2>
+{{#if isAdmin }}
+<h2>Eres admin</h2>
+<div style="display: flex; justify-content: space-around;
+    align-items: center;">
+<form action="/users" method="get">
+    <button style="cursor: pointer;">Ver lista de usuarios</button>
+</form>
+{{else}}
+    <h2>No tienes permisos de administrador para acceder a la lista de usuarios.</h2>
+{{/if}}
+<form action="/" method="get">
+    <button style="cursor: pointer;">Ver productos disponibles</button>
+</form>
+<form action="/logout" method="POST">
+    <button style="cursor: pointer;" type="submit">Logout</button>
+</form>
+    </div>
